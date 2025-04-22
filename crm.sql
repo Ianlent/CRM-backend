@@ -1,6 +1,13 @@
 -- Enable UUID support
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Create Enum for user roles
+DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role_enum') THEN
+        CREATE TYPE user_role_enum AS ENUM ('admin', 'manager', 'employee');
+    END IF;
+END $$;
+
 -- Enum for discount type
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'discount_type_enum') THEN
@@ -21,8 +28,8 @@ CREATE TABLE customers (
 -- Users
 CREATE TABLE users (
     user_id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    user_role VARCHAR(20) NOT NULL UNIQUE,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    user_role user_role_enum NOT NULL,
     phone_number VARCHAR(20),
     password_hash VARCHAR(100) NOT NULL
 );

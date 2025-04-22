@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import users from './routes/users.js';
 import auth from './routes/auth.js';
-import authenticateToken from './middleware/authMiddle.js';
-import authorizeRoles from './middleware/authorizeRoles.js';
+import authenticateToken from './middleware/auth/authMiddle.js';
+import authorizeRoles from './middleware/auth/authorizeRoles.js';
 
 const app = express();
 

@@ -12,13 +12,15 @@ const saltRound = 10;
  */
 export const register = async (req, res) => {
 	try {
-		const { username, user_role, phone_number, password } = req.body;
+		const { username, phone_number, password } = req.body;
 
 		// Check if user already exists
 		const userExists = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
 		if (userExists.rows.length > 0) {
 			return res.status(409).json({ success: false, message: "Username already exists" });
 		}
+
+		const user_role = "employee";
 
 		// Hash the password
 		const salt = bcrypt.genSaltSync(saltRound);
