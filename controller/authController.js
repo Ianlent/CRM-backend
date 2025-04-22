@@ -1,6 +1,6 @@
 import pool from "../db.js";
 import bcrypt from "bcrypt";
-
+import { generateToken } from "../utils/generateToken.js";
 const saltRound = 10;
 
 export const register = async (req, res) => {
@@ -26,7 +26,12 @@ export const register = async (req, res) => {
 		const newUser = result.rows[0];
 		delete newUser.password_hash;
 
-		return res.status(201).json({ success: true, user: newUser });
+		const token = generateToken(newUser);
+
+		return res.status(201).json({ success: true,
+			user: newUser,
+			token
+		});
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).json({ success: false, message: "Internal Server Error" });
@@ -50,7 +55,10 @@ export const login = async (req, res) => {
 		}
 
 		delete user.password_hash;
-		return res.status(200).json({ success: true, user });
+
+		const token = generateToken(user);
+
+		return res.status(200).json({ success: true, user, token });
 	} catch (err) {
 		console.error(err.message);
 		return res.status(500).json({ success: false, message: "Internal Server Error" });
