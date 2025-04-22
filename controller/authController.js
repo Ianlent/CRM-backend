@@ -3,6 +3,13 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
 const saltRound = 10;
 
+/**
+ * @description Register a new user
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response containing the newly created user and a token, or an error message
+ * @throws {Error} If there is an error with the database query
+ */
 export const register = async (req, res) => {
 	try {
 		const { username, user_role, phone_number, password } = req.body;
@@ -39,6 +46,14 @@ export const register = async (req, res) => {
 };
 
 
+
+/**
+ * @description Logs in a user by checking their username and password
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} JSON response containing the logged in user and a token, or an error message
+ * @throws {Error} If there is an error with the database query
+ */
 export const login = async (req, res) => {
 	try {
 		const { username, password } = req.body;
