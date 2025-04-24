@@ -158,3 +158,11 @@ END $$;
 CREATE INDEX IF NOT EXISTS idx_orders_order_date     ON orders(order_date);
 CREATE INDEX IF NOT EXISTS idx_expenses_expense_date ON expenses(expense_date);
 
+-- 6. Indexes for performance on multiple columns
+CREATE INDEX idx_customers_search_lower
+  ON customers (
+    lower(phone_number),
+    lower(first_name),
+    lower(last_name)
+  );
+
