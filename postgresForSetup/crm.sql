@@ -142,6 +142,13 @@ DO $$ BEGIN
         BEFORE UPDATE ON services
         FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
     END IF;
+	IF NOT EXISTS (
+	  SELECT 1 FROM pg_trigger WHERE tgname = 'trg_discounts_updated'
+	) THEN
+	  CREATE TRIGGER trg_discounts_updated
+	    BEFORE UPDATE ON discounts
+	    FOR EACH ROW EXECUTE PROCEDURE set_updated_at();
+	END IF;
     IF NOT EXISTS (
       SELECT 1 FROM pg_trigger WHERE tgname = 'trg_orders_updated'
     ) THEN
