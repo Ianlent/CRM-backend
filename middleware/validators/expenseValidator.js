@@ -8,7 +8,9 @@ export const createExpenseValidation = [
   body("expense_description")
     .optional()
     .isString().withMessage("Description must be a string")
-    .isLength({ max: 50 }).withMessage("Description can't be longer than 50 characters"),
+    .isLength({ max: 50 }).withMessage("Description can't be longer than 50 characters")
+    .trim()
+    .escape(),
 ];
 
 export const updateExpenseValidation = [
@@ -23,5 +25,7 @@ export const updateExpenseValidation = [
   body("expense_description")
     .optional()
     .isString().withMessage("Description must be a string")
-    .isLength({ max: 50 }).withMessage("Description can't be longer than 50 characters"),
+    .isLength({ max: 50 }).withMessage("Description can't be longer than 50 characters")
+    .trim()
+    .escape(),
 ];

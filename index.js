@@ -11,6 +11,7 @@ import auth from './routes/auth.js';
 import users from './routes/users.js';
 import customers from './routes/customers.js';
 import expenses from './routes/expenses.js';
+import services from './routes/services.js';
 ///////////////////////////////////////////
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(authenticateToken);
 app.use('/api/users', authorizeRoles(['admin']), users)
 app.use('/api/customers', customers) //authorization handled seperately in route for finer control
 app.use('/api/expenses', authorizeRoles(['admin', 'manager']), expenses) //more authorization handled seperately in route for finer control
+app.use('/api/services', services) //more authorization handled seperately in route for finer control
 
 
 app.listen(process.env.PORT, () =>

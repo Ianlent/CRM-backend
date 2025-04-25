@@ -1,5 +1,6 @@
 -- Enable UUID support
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 
 -- 1. Enum types
 DO $$ BEGIN
@@ -47,13 +48,13 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Services
 CREATE TABLE IF NOT EXISTS services (
-    service_id             BIGSERIAL PRIMARY KEY,
-    service_description    VARCHAR(30) NOT NULL,
-    service_unit           VARCHAR(20) NOT NULL,
-    service_price_per_unit INT NOT NULL CHECK (service_price_per_unit > 0),
-    is_deleted             BOOLEAN DEFAULT FALSE,
-    created_at             TIMESTAMP NOT NULL DEFAULT now(),
-    updated_at             TIMESTAMP NOT NULL DEFAULT now()
+    service_id             	BIGSERIAL PRIMARY KEY,
+    service_name			VARCHAR(30) NOT NULL,
+    service_unit           	VARCHAR(20) NOT NULL,
+    service_price_per_unit 	INT NOT NULL CHECK (service_price_per_unit > 0),
+    is_deleted             	BOOLEAN DEFAULT FALSE,
+    created_at             	TIMESTAMP NOT NULL DEFAULT now(),
+    updated_at             	TIMESTAMP NOT NULL DEFAULT now()
 );
 
 -- Discounts
@@ -165,4 +166,7 @@ CREATE INDEX idx_customers_search_lower
     lower(first_name),
     lower(last_name)
   );
+
+-- 7. Indexes for partial matching
+CREATE INDEX idx_services_service_name_trgm ON services USING gin (service_name gin_trgm_ops);
 

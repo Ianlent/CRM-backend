@@ -16,10 +16,13 @@ INSERT INTO users (username, user_role, phone_number, password_hash) VALUES
 
 -- 3. Services
 INSERT INTO services (service_description, service_unit, service_price_per_unit) VALUES
-  ('Cleaning',     'hour', 50),
-  ('Repair',       'job', 100),
-  ('Consultation', 'session', 75),
-  ('Installation', 'unit', 150);
+  ('Washing',           'kg', 30),      -- Washing service per kilogram
+  ('Drying',            'kg', 20),      -- Drying service per kilogram
+  ('Ironing',           'item', 10),    -- Ironing service per item
+  ('Laundry Pickup',    'order', 50),   -- Pickup service per order
+  ('Laundry Delivery',  'order', 50),   -- Delivery service per order
+  ('Express Washing',   'kg', 50),      -- Express service for faster washing
+  ('Stain Removal',     'item', 15); 
 
 -- 4. Discounts
 INSERT INTO discounts (required_points, discount_type, amount) VALUES
