@@ -39,23 +39,23 @@ INSERT INTO orders (customer_id, order_date, handler_id, order_status, discount_
   (5, '2025-04-04 16:20:00', 2, 'completed', 1);
 
 -- 6. Order_Service line items
-INSERT INTO order_service (order_id, service_id, number_of_unit) VALUES
-  -- Order 1: Alice bought 2 hours Cleaning + 1 Repair job
-  ((SELECT order_id FROM orders WHERE customer_id = 1 AND order_date = '2025-04-01 09:15:00'), 1, 2),
-  ((SELECT order_id FROM orders WHERE customer_id = 1 AND order_date = '2025-04-01 09:15:00'), 2, 1),
+INSERT INTO order_service (order_id, service_id, number_of_unit, total_price) VALUES
+  -- Order 1: Alice bought 2 Washing units and 1 Drying unit
+  ((SELECT order_id FROM orders WHERE customer_id = 1 AND order_date = '2025-04-01 09:15:00'), 1, 2, (SELECT service_price_per_unit FROM services WHERE service_id = 1) * 2),
+  ((SELECT order_id FROM orders WHERE customer_id = 1 AND order_date = '2025-04-01 09:15:00'), 2, 1, (SELECT service_price_per_unit FROM services WHERE service_id = 2) * 1),
 
-  -- Order 2: Bob bought 5 Repair jobs
-  ((SELECT order_id FROM orders WHERE customer_id = 2 AND order_date = '2025-04-01 10:30:00'), 2, 5),
+  -- Order 2: Bob Drying units
+  ((SELECT order_id FROM orders WHERE customer_id = 2 AND order_date = '2025-04-01 10:30:00'), 2, 5, (SELECT service_price_per_unit FROM services WHERE service_id = 2) * 5),
 
-  -- Order 3: Charlie booked 1 Consultation session
-  ((SELECT order_id FROM orders WHERE customer_id = 3 AND order_date = '2025-04-02 14:00:00'), 3, 1),
+  -- Order 3: Charlie purchased 1 Ironing unit
+  ((SELECT order_id FROM orders WHERE customer_id = 3 AND order_date = '2025-04-02 14:00:00'), 3, 1, (SELECT service_price_per_unit FROM services WHERE service_id = 3) * 1),
 
-  -- Order 4: Dana purchased 3 Installation units
-  ((SELECT order_id FROM orders WHERE customer_id = 4 AND order_date = '2025-04-03 11:45:00'), 4, 3),
+  -- Order 4: Dana purchased 3 Laundry Pickup units
+  ((SELECT order_id FROM orders WHERE customer_id = 4 AND order_date = '2025-04-03 11:45:00'), 4, 3, (SELECT service_price_per_unit FROM services WHERE service_id = 4) * 3),
 
-  -- Order 5: Evan 4 Cleaning hours + 2 Consultation sessions
-  ((SELECT order_id FROM orders WHERE customer_id = 5 AND order_date = '2025-04-04 16:20:00'), 1, 4),
-  ((SELECT order_id FROM orders WHERE customer_id = 5 AND order_date = '2025-04-04 16:20:00'), 3, 2);
+  -- Order 5: Evan purchased 4 Washing units and 2 Ironing units
+  ((SELECT order_id FROM orders WHERE customer_id = 5 AND order_date = '2025-04-04 16:20:00'), 1, 4, (SELECT service_price_per_unit FROM services WHERE service_id = 1) * 4),
+  ((SELECT order_id FROM orders WHERE customer_id = 5 AND order_date = '2025-04-04 16:20:00'), 3, 2, (SELECT service_price_per_unit FROM services WHERE service_id = 3) * 2);
 
 -- 7. Expenses
 INSERT INTO expenses (amount, expense_date, expense_description) VALUES

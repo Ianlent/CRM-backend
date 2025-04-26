@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS discounts (
 CREATE TABLE IF NOT EXISTS orders (
     order_id      UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     customer_id   BIGINT,
-    order_date    TIMESTAMP NOT NULL,
+    order_date    TIMESTAMP NOT NULL DEFAULT now(),
     handler_id    BIGINT,
     order_status  order_status_enum NOT NULL DEFAULT 'pending',
     is_deleted    BOOLEAN DEFAULT FALSE,
@@ -92,6 +92,7 @@ CREATE TABLE IF NOT EXISTS order_service (
     order_id       UUID NOT NULL,
     service_id     BIGINT,
     number_of_unit INT NOT NULL CHECK (number_of_unit > 0),
+	total_price    INT NOT NULL CHECK (total_price > 0) DEFAULT 1,
     PRIMARY KEY (order_id, service_id),
     CONSTRAINT fk_order FOREIGN KEY (order_id)
         REFERENCES orders (order_id) ON DELETE CASCADE ON UPDATE CASCADE,
