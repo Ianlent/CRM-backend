@@ -237,27 +237,76 @@ export const createOrder = async (req, res) => {
 	}
 };
 
-export const updateOrder = async (req, res) => {
+export const updateOrderStatus = async (req, res) => {
 	const { id } = req.params;
-	const { order_status, handler_id, discount_id } = req.body;
-
+	const { order_status } = req.body;
+  
 	try {
-		const result = await pool.query(
-			`UPDATE orders SET
-         order_status = $1,
-         handler_id = $2,
-         discount_id = $3,
-         updated_at = NOW()
-       WHERE order_id = $4 RETURNING *`,
-			[order_status, handler_id, discount_id, id]
-		);
-
-		if (result.rows.length === 0)
-			return res.status(404).json({ error: "Order not found" });
-
-		res.json({ message: "Order updated", order: result.rows[0] });
+	  const result = await pool.query(
+		`UPDATE orders SET
+		  order_status = $1,
+		  updated_at = NOW()
+		WHERE order_id = $2
+		RETURNING order_id, order_status`,
+		[order_status, id]
+	  );
+  
+	  if (result.rows.length === 0) {
+		return res.status(404).json({ error: "Order not found" });
+	  }
+  
+	  res.json({ message: "Order status updated", order: result.rows[0] });
 	} catch (err) {
-		res.status(500).json({ error: "Failed to update order" });
+	  console.error(err.message);
+	  res.status(500).json({ error: "Failed to update order status" });
+	}
+}
+
+
+export const updateOrder = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const { order_status, handler_id, discount_id } = req.body;
+		let fields = [];
+		let values = [];
+		let idx = 1;
+
+		if (order_status) {
+			fields.push(`order_status = $${idx++}`);
+			values.push(order_status);
+		}
+		if (handler_id) {
+			fields.push(`handler_id = $${idx++}`);
+			values.push(handler_id);
+		}
+		if (discount_id !== undefined) {  // Allow null to reset discount
+			fields.push(`discount_id = $${idx++}`);
+			values.push(discount_id);
+		}
+
+		if (fields.length === 0) {
+			return res.status(400).json({ error: "No fields to update" });
+		}
+
+		values.push(id);
+
+		const sql = `
+			UPDATE orders
+			SET ${fields.join(", ")}
+			WHERE order_id = $${idx}
+			RETURNING order_id, customer_id, order_date, handler_id, order_status, discount_id
+		`;
+
+		const result = await pool.query(sql, values);
+
+		if (result.rows.length === 0) {
+			return res.status(404).json({ error: "Order not found" });
+		}
+
+		return res.status(200).json({ message: "Order updated", order: result.rows[0] });
+	} catch (err) {
+		console.error(err.message);
+		return res.status(500).json({ error: "Failed to update order" });
 	}
 };
 
@@ -298,8 +347,8 @@ export const updateOrderService = async (req, res) => {
 	try {
 		await pool.query(
 			`UPDATE order_service
-       SET number_of_unit = $1
-       WHERE order_id = $2 AND service_id = $3`,
+			SET number_of_unit = $1
+			WHERE order_id = $2 AND service_id = $3`,
 			[number_of_unit, id, service_id]
 		);
 		res.json({ message: "Service quantity updated" });

@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "pg_trgm";
 -- 1. Enum types
 DO $$ BEGIN
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role_enum') THEN
-        CREATE TYPE user_role_enum AS ENUM ('admin', 'manager', 'employee');
+        CREATE TYPE user_role_enum AS ENUM ('employee', 'manager', 'admin');
     END IF;
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'discount_type_enum') THEN
         CREATE TYPE discount_type_enum AS ENUM ('percent', 'fixed');
@@ -104,9 +104,9 @@ CREATE TABLE IF NOT EXISTS order_service (
 CREATE TABLE IF NOT EXISTS expenses (
     expense_id           UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     amount               INT NOT NULL CHECK (amount > 0),
-    is_deleted           BOOLEAN NOT NULL DEFAULT FALSE,
     expense_date         TIMESTAMP NOT NULL DEFAULT now(),
     expense_description  VARCHAR(50),
+    is_deleted           BOOLEAN NOT NULL DEFAULT FALSE,
     created_at           TIMESTAMP NOT NULL DEFAULT now(),
     updated_at           TIMESTAMP NOT NULL DEFAULT now()
 );

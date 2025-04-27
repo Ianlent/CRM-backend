@@ -15,7 +15,7 @@ INSERT INTO users (username, user_role, phone_number, password_hash) VALUES
   ('employee01', 'employee', '+84901230002', 'hashed_pw_employee');
 
 -- 3. Services
-INSERT INTO services (service_description, service_unit, service_price_per_unit) VALUES
+INSERT INTO services (service_name, service_unit, service_price_per_unit) VALUES
   ('Washing',           'kg', 30),      -- Washing service per kilogram
   ('Drying',            'kg', 20),      -- Drying service per kilogram
   ('Ironing',           'item', 10),    -- Ironing service per item

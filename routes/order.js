@@ -8,6 +8,7 @@ import {
   getOrderDetailsById,
   getOrdersByDateRange,
   createOrder,
+  updateOrderStatus,
   updateOrder,
   deleteOrder,
   addServiceToOrder,
@@ -21,19 +22,21 @@ import { createOrderValidation, updateOrderValidation } from "../middleware/vali
 
 const router = express.Router();
 
+//employee routes
 // GET
 router.get("/", getAllOrders); // ?page=1&limit=10&customer_id=123 (optional filters)
-router.get("/search", getOrdersByDateRange); // ?start=2025-04-01&end=2025-04-04
 router.get("/:id", getOrderDetailsById);
+router.put("/:id/status", updateOrderStatus);
 
 // // POST
 router.post("/", createOrderValidation, handleValidationErrors, createOrder);
 
-// // Admin or staff only
-// router.use(authorizeRoles(["admin", "staff"]));
 
-// router.put("/:id", updateOrderValidation, handleValidationErrors, updateOrder);
-// router.delete("/:id", deleteOrder);
+// Admin or staff only
+router.use(authorizeRoles(["admin", "manager"]));
+router.get("/search", getOrdersByDateRange); // ?start=2025-04-01&end=2025-04-04
+router.put("/:id", updateOrderValidation, handleValidationErrors, updateOrder); // update who handles the order, discount status and track order's status
+router.delete("/:id", deleteOrder);
 
 // // Optional service management within orders
 // router.post("/:id/services", addServiceToOrder); // add service to order
