@@ -1,4 +1,5 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
+
 
 // Validator for creating a new order
 export const createOrderValidation = [
@@ -28,9 +29,9 @@ export const createOrderValidation = [
 
 // Validator for updating an order (less strict, assumes partial update)
 export const updateOrderValidation = [
-	body("customer_id")
-		.optional()
-		.isInt({ gt: 0 }).withMessage("Customer ID must be a positive integer"),
+	param("id")
+		.notEmpty().withMessage("Order ID is required")
+		.isUUID(4).withMessage("Order ID must be a valid UUID v4 string"),
 
 	body("handler_id")
 		.optional()
@@ -39,18 +40,6 @@ export const updateOrderValidation = [
 	body("discount_id")
 		.optional({ nullable: true })
 		.isInt({ gt: 0 }).withMessage("Discount ID must be a positive integer if provided"),
-
-	body("services")
-		.optional()
-		.isArray({ min: 1 }).withMessage("Services must be a non-empty array"),
-
-	body("services.*.service_id")
-		.optional()
-		.isInt({ gt: 0 }).withMessage("Service ID must be a positive integer"),
-
-	body("services.*.number_of_unit")
-		.optional()
-		.isInt({ gt: 0 }).withMessage("Unit must be a positive integer"),
 	
 	body("order_status")
 		.optional()
@@ -60,4 +49,44 @@ export const updateOrderValidation = [
 	body("order_date")
 		.optional()
 		.isISO8601().withMessage("Order date must be a valid date string (ISO 8601)"),
+];
+
+export const addServiceToOrderValidation = [
+	body("service_id")
+		.notEmpty().withMessage("Service ID is required")
+		.isInt({ gt: 0 }).withMessage("Service ID must be a positive integer"),
+
+	body("number_of_unit")
+		.notEmpty().withMessage("Unit number is required")
+		.isInt({ gt: 0 }).withMessage("Unit must be a positive integer"),
+];
+
+export const updateServiceInOrderValidation = [
+	body("number_of_unit")
+		.notEmpty().withMessage("Unit number is required")
+		.isInt({ gt: 0 }).withMessage("Unit must be a positive integer"),
+];
+
+export const deleteServiceFromOrderValidation = [
+	param("service_id")
+		.notEmpty().withMessage("Service ID is required")
+		.isInt({ gt: 0 }).withMessage("Service ID must be a positive integer"),
+];
+
+export const orderParamValidation = [
+	param("order_id")
+		.notEmpty().withMessage("Order ID is required")
+		.isUUID(4).withMessage("Order ID must be a valid UUID v4 string"),
+];
+
+export const serviceParamValidation = [
+	param("service_id")
+		.notEmpty().withMessage("Service ID is required")
+		.isInt({ gt: 0 }).withMessage("Service ID must be a positive integer"),
+];
+
+export const checkHandlerParamValidation = [
+	param("handler_id")
+		.notEmpty().withMessage("Handler ID is required")
+		.isInt({ gt: 0 }).withMessage("Handler ID must be a positive integer"),
 ];

@@ -32,10 +32,7 @@ export const register = async (req, res) => {
 				user_id,
 				username,
 				user_role,
-				user_status,
-				phone_number,
-				created_at,
-				updated_at`,
+				phone_number`,
 			[username, user_role, phone_number, password_hash]
 		);
 
@@ -44,8 +41,7 @@ export const register = async (req, res) => {
 		const token = generateToken({
 			user_id: newUser.user_id,
 			username: newUser.username,
-			user_role: newUser.user_role,
-			user_status: newUser.user_status
+			user_role: newUser.user_role
 		});
 
 		return res.status(201).json({ success: true, user: newUser, token });
@@ -66,11 +62,7 @@ export const login = async (req, res) => {
 				user_id,
 				username,
 				user_role,
-				user_status,
-				phone_number,
-				password_hash,
-				created_at,
-				updated_at
+				password_hash
 			FROM users
 			WHERE username = $1
 				AND is_deleted = FALSE
@@ -96,7 +88,6 @@ export const login = async (req, res) => {
 			user_id: user.user_id,
 			username: user.username,
 			user_role: user.user_role,
-			user_status: user.user_status
 		});
 
 		return res.status(200).json({ success: true, user, token });
